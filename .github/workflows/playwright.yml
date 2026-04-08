@@ -25,6 +25,10 @@ jobs:
         run: npm run format:check
 
       - name: Run Playwright tests
+        env:
+          USER_NAME: ${{ secrets.TEST_USERNAME }}
+          PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          AUTH_FILE: playwright/.auth.json
         run: npx playwright test
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
