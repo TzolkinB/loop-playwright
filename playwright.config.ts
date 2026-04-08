@@ -4,9 +4,9 @@ import { defineConfig, devices } from '@playwright/test'
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import dotenv from 'dotenv'
+import path from 'path'
+dotenv.config({ path: path.resolve(__dirname, '.env') })
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -27,7 +27,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: 'https://animated-gingersnap-8cf7f2.netlify.app/',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -36,24 +36,52 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
+      name: 'login-tests',
+      testMatch: '**/login.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        // No storageState - fresh browser context for login testing
+      },
+      // No dependencies - runs independently without auth setup
+    },
+    {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      testIgnore: '**/login.spec.ts', // Skip login test in authenticated projects
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: process.env.AUTH_FILE!,
+      },
+      dependencies: ['setup'],
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      testIgnore: '**/login.spec.ts', // Skip login test in authenticated projects
+      use: {
+        ...devices['Desktop Firefox'],
+        storageState: process.env.AUTH_FILE!,
+      },
+      dependencies: ['setup'],
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      testIgnore: '**/login.spec.ts', // Skip login test in authenticated projects
+      use: {
+        ...devices['Desktop Safari'],
+        storageState: process.env.AUTH_FILE!,
+      },
+      dependencies: ['setup'],
     },
 
     /* Test against mobile viewports. */
     // {
     //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
+    //   use: { ...devices['Pixel 5'], storageState: 'playwright/.auth.json' },
     // },
     // {
     //   name: 'Mobile Safari',
