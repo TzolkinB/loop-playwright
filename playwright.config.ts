@@ -4,9 +4,9 @@ import { defineConfig, devices } from '@playwright/test'
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import dotenv from 'dotenv'
+import path from 'path'
+dotenv.config({ path: path.resolve(__dirname, '.env') })
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -40,28 +40,40 @@ export default defineConfig({
       testMatch: /.*\.setup\.ts/,
     },
     {
-      name: 'chromium',
+      name: 'login-tests',
+      testMatch: '**/login.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'playwright/.auth.json',
+        // No storageState - fresh browser context for login testing
+      },
+      // No dependencies - runs independently without auth setup
+    },
+    {
+      name: 'chromium',
+      testIgnore: '**/login.spec.ts', // Skip login test in authenticated projects
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: process.env.AUTH_FILE!,
       },
       dependencies: ['setup'],
     },
 
     {
       name: 'firefox',
+      testIgnore: '**/login.spec.ts', // Skip login test in authenticated projects
       use: {
         ...devices['Desktop Firefox'],
-        storageState: 'playwright/.auth.json',
+        storageState: process.env.AUTH_FILE!,
       },
       dependencies: ['setup'],
     },
 
     {
       name: 'webkit',
+      testIgnore: '**/login.spec.ts', // Skip login test in authenticated projects
       use: {
         ...devices['Desktop Safari'],
-        storageState: 'playwright/.auth.json',
+        storageState: process.env.AUTH_FILE!,
       },
       dependencies: ['setup'],
     },
