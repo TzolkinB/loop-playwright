@@ -11,6 +11,11 @@ export enum TagName {
   DESIGN = 'Design',
 }
 
+export enum AppHeading {
+  MOBILE = 'Mobile Application',
+  WEB = 'Web Application',
+}
+
 export interface TaskTestCase {
   testName: string
   taskTitle: string

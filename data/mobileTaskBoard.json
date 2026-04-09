@@ -1,5 +1,4 @@
 {
-  "mobileHeading": "Mobile Application",
   "tasks": [
     {
       "testName": "should display 'Push notification system' in 'To Do' column with correct tags",

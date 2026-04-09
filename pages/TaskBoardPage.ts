@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test'
-import data from '../data/mobileTaskBoard.json'
+import { AppHeading } from '../types/testData'
 
 export default class TaskBoardPage {
   readonly page: Page
@@ -11,11 +11,11 @@ export default class TaskBoardPage {
     this.page = page
     this.mobileAppHeading = this.page.getByRole('heading', {
       level: 1,
-      name: data.mobileHeading,
+      name: AppHeading.MOBILE,
     })
     this.mobileNavHeading = this.page.getByRole('heading', {
       level: 2,
-      name: data.mobileHeading,
+      name: AppHeading.MOBILE,
     })
     this.mobileNavigationButton = this.page
       .getByRole('button')
