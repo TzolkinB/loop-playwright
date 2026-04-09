@@ -33,6 +33,9 @@ export default defineConfig([
         sourceType: 'module',
       },
     },
+    rules: {
+      'newline-per-chained-call': ['error', { ignoreChainWithDepth: 3 }],
+    },
   },
   prettierConfig,
 ])
