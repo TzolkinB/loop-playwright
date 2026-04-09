@@ -11,7 +11,8 @@ export default class TaskBoardPage {
     return this.page.locator('div').filter({
       has: this.page.getByRole('heading', {
         level: 2,
-        name: new RegExp(`^${columnName}`),
+        name: columnName,
+        exact: false,
       }),
     })
   }
