@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test'
 import TaskBoardPage from '../pages/TaskBoardPage'
-import { getMobileTaskBoardScenarios } from '../utils/dataLoader'
+import mobileTaskData from '../data/mobileTaskBoard.json'
+import { TestScenario } from '../types/testData'
 
 test.describe('Mobile Application Task Board', () => {
-  const testScenarios = getMobileTaskBoardScenarios()
+  const testScenarios: TestScenario = mobileTaskData as TestScenario
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/')

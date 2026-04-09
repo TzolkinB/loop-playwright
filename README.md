@@ -88,8 +88,6 @@ The hooks run automatically when you commit changes. If any checks fail, the com
 ├── types/                 # TypeScript type definitions and enums
 │   ├── testData.ts        # ColumnName, TagName enums
 │   └── loginData.ts       # LoginConstants interface
-├── utils/                 # Shared utilities
-│   └── dataLoader.ts      # Loads JSON scenarios
 ├── .prettierrc            # Prettier configuration
 ├── .prettierignore        # Prettier ignore patterns
 ├── .gitignore             # Git ignore rules
@@ -115,9 +113,7 @@ This project uses a scalable, type-safe data-driven testing approach to minimize
    - `TagName` enum — restricts tags to valid values
    - Enums define allowed values in TypeScript usage
 
-3. **Data Loading** (`utils/dataLoader.ts`) — loads and exposes scenarios to tests
-
-4. **Page Objects** (`pages/` folder) — reusable locator methods
+3. **Page Objects** (`pages/` folder) — reusable locator methods
    - Methods accept column names and task titles from data
    - No hardcoded selectors in tests
 
