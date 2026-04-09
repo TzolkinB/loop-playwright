@@ -1,0 +1,18 @@
+{
+  "tasks": [
+    {
+      "testName": "should display 'Implement user authentication' in 'To Do' column with correct tags",
+      "taskTitle": "Implement user authentication",
+      "tags": ["Feature", "High Priority"],
+      "column": "To Do",
+      "taskCount": 2
+    },
+    {
+      "testName": "should display 'Fix navigation bug' in 'To Do' column with correct tags",
+      "taskTitle": "Fix navigation bug",
+      "tags": ["Bug"],
+      "column": "To Do",
+      "taskCount": 2
+    }
+  ]
+}
