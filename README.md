@@ -3,7 +3,7 @@
 # Loop Playwright
 
 A test-only repository for Playwright end-to-end testing with comprehensive tooling setup.
-Optimized for scalability, it uses data-driven methods like POM, JSON, and Typescript(enums) and
+Optimized for scalability, it uses data-driven methods like POM, JSON, and TypeScript (enums).
 
 ## Tools Used
 
@@ -90,6 +90,9 @@ The hooks run automatically when you commit changes. If any checks fail, the com
 │   └── loginData.ts       # LoginConstants interface
 ├── utils/                 # Shared utilities
 │   └── dataLoader.ts      # Loads JSON scenarios
+├── .prettierrc            # Prettier configuration
+├── .prettierignore        # Prettier ignore patterns
+├── .gitignore             # Git ignore rules
 ├── playwright.config.ts   # Playwright configuration
 ├── eslint.config.mts      # ESLint configuration
 ├── tsconfig.json          # TypeScript configuration
@@ -110,7 +113,7 @@ This project uses a scalable, type-safe data-driven testing approach to minimize
 2. **Type Safety** (`types/` folder) — TypeScript enums enforce valid values
    - `ColumnName` enum — restricts columns to "To Do", "In Progress", "Done"
    - `TagName` enum — restricts tags to valid values
-   - Compile-time validation prevents invalid test data
+   - Enums define allowed values in TypeScript usage
 
 3. **Data Loading** (`utils/dataLoader.ts`) — loads and exposes scenarios to tests
 
@@ -121,7 +124,7 @@ This project uses a scalable, type-safe data-driven testing approach to minimize
 ### Adding New Test Scenarios
 
 1. Edit a data file (`data/webTaskBoard.json` or `data/mobileTaskBoard.json`)
-2. Add a new task object with column, title, tags, and optional taskCount
+2. Add a new task object with column, title, tags, and taskCount
 3. Run tests — the new scenario runs automatically via `forEach` loop
 
 **Example:**

@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test'
-import { AppHeading } from '../types/testData'
+import { AppHeading, TagName } from '../types/testData'
 
 export default class TaskBoardPage {
   readonly page: Page
@@ -50,7 +50,7 @@ export default class TaskBoardPage {
   taskWithTags(
     columnName: string,
     taskTitle: string,
-    ...tags: string[]
+    ...tags: TagName[]
   ): Locator {
     const col = this.column(columnName)
 
