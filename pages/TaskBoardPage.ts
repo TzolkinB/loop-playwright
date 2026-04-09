@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test'
-import { AppHeading, TagName } from '../types/testData'
+import { AppHeading, TagName } from '../types/taskBoard'
 
 export default class TaskBoardPage {
   readonly page: Page

@@ -86,8 +86,8 @@ The hooks run automatically when you commit changes. If any checks fail, the com
 │   ├── mobileTaskBoard.json
 │   └──
 ├── types/                 # TypeScript type definitions and enums
-│   ├── testData.ts        # ColumnName, TagName enums
-│   └── loginData.ts       # LoginConstants interface
+│   ├── taskBoard.ts       # ColumnName, TagName enums
+│   └── login.ts           # LoginConstants interface
 ├── .prettierrc            # Prettier configuration
 ├── .prettierignore        # Prettier ignore patterns
 ├── .gitignore             # Git ignore rules

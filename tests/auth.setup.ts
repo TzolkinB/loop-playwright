@@ -1,5 +1,5 @@
 import { test as setup, expect } from '@playwright/test'
-import { LoginConstants } from '../types/loginData'
+import { LoginConstants } from '../types/login'
 
 const username = process.env.USER_NAME
 const password = process.env.PASSWORD

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import TaskBoardPage from '../pages/TaskBoardPage'
 import webTaskData from '../data/webTaskBoard.json'
-import { TestScenario } from '../types/testData'
+import { TestScenario } from '../types/taskBoard'
 
 test.describe('Web Application Task Board', () => {
   const testScenarios: TestScenario = webTaskData as TestScenario

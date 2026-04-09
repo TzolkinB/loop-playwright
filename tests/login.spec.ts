@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { LoginConstants } from '../types/loginData'
+import { LoginConstants } from '../types/login'
 
 test('user can log in with valid credentials', async ({ page }) => {
   await page.goto('/')
