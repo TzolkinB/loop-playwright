@@ -11,6 +11,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
 jobs:
   test:
     timeout-minutes: 60
@@ -38,7 +42,7 @@ jobs:
           AUTH_FILE: playwright/.auth.json
         run: npx playwright test
       - uses: actions/upload-artifact@v7
-        if: ${{ !cancelled() }}
+        if: failure() || github.ref == 'refs/heads/master'
         with:
           name: playwright-report
           path: playwright-report/
