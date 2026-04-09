@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "testName": "should display 'Push notification system' in 'To Do' column with correct tags",
+      "taskTitle": "Push notification system",
+      "tags": ["Feature"],
+      "column": "To Do",
+      "taskCount": 1
+    },
+    {
+      "testName": "should display 'Offline mode' in 'In Progress' column with correct tags",
+      "taskTitle": "Offline mode",
+      "tags": ["Feature", "High Priority"],
+      "column": "In Progress",
+      "taskCount": 1
+    },
+    {
+      "testName": "should display 'App icon design' in 'Done' column with correct tags",
+      "taskTitle": "App icon design",
+      "tags": ["Design"],
+      "column": "Done",
+      "taskCount": 1
+    }
+  ]
+}
