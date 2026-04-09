@@ -1,6 +1,9 @@
+![CI/CD workflow](https://github.com/TzolkinB/loop-playwright/actions/workflows/playwright.yml/badge.svg)
+
 # Loop Playwright
 
 A test-only repository for Playwright end-to-end testing with comprehensive tooling setup.
+Optimized for scalability, it uses data-driven methods like POM, JSON, and Typescript(enums) and
 
 ## Tools Used
 
@@ -72,9 +75,65 @@ The hooks run automatically when you commit changes. If any checks fail, the com
 
 ```
 ├── tests/                 # Playwright test files
+│   ├── webApp.spec.ts     # Web task board tests
+│   ├── mobileApp.spec.ts  # Mobile task board tests
+│   ├── login.spec.ts      # Login tests
+│   └── auth.setup.ts      # Authentication setup
+├── pages/                 # Page Object Model
+│   └── TaskBoardPage.ts   # Task board locators and methods
+├── data/                  # Test data (JSON scenarios)
+│   ├── webTaskBoard.json
+│   ├── mobileTaskBoard.json
+│   └── login.json
+├── types/                 # TypeScript type definitions and enums
+│   ├── testData.ts        # ColumnName, TagName enums
+│   └── loginData.ts       # LoginConstants interface
+├── utils/                 # Shared utilities
+│   └── dataLoader.ts      # Loads JSON scenarios
 ├── playwright.config.ts   # Playwright configuration
-├── eslint.config.mts     # ESLint configuration
-├── tsconfig.json         # TypeScript configuration
-├── .prettierrc           # Prettier configuration
-└── package.json          # Project dependencies and scripts
+├── eslint.config.mts      # ESLint configuration
+├── tsconfig.json          # TypeScript configuration
+└── package.json           # Dependencies and scripts
 ```
+
+## Data-Driven Testing Architecture
+
+This project uses a scalable, type-safe data-driven testing approach to minimize code duplication and improve maintainability.
+
+### How It Works
+
+1. **Test Data** (`data/` folder) — JSON files define test scenarios
+   - `webTaskBoard.json` - Web app task board test cases
+   - `mobileTaskBoard.json` - Mobile app task board test cases
+   - `login.json` - Login UI constants
+
+2. **Type Safety** (`types/` folder) — TypeScript enums enforce valid values
+   - `ColumnName` enum — restricts columns to "To Do", "In Progress", "Done"
+   - `TagName` enum — restricts tags to valid values
+   - Compile-time validation prevents invalid test data
+
+3. **Data Loading** (`utils/dataLoader.ts`) — loads and exposes scenarios to tests
+
+4. **Page Objects** (`pages/` folder) — reusable locator methods
+   - Methods accept column names and task titles from data
+   - No hardcoded selectors in tests
+
+### Adding New Test Scenarios
+
+1. Edit a data file (`data/webTaskBoard.json` or `data/mobileTaskBoard.json`)
+2. Add a new task object with column, title, tags, and optional taskCount
+3. Run tests — the new scenario runs automatically via `forEach` loop
+
+**Example:**
+
+```json
+{
+  "testName": "should display 'New Task' in 'To Do' column with tags",
+  "taskTitle": "New Task",
+  "tags": ["Feature"],
+  "column": "To Do",
+  "taskCount": 3
+}
+```
+
+No test code changes needed — data drives everything.
