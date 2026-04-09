@@ -1,0 +1,8 @@
+{
+  "description": "Login Constants",
+  "login": {
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "loginButton": "Sign in"
+  }
+}

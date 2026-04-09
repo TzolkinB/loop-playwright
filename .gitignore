@@ -13,3 +13,8 @@ node_modules/
 coverage/
 dist/
 build/
+
+# TypeScript
+*.tsbuildinfo
+*.d.ts.map
+*.js.map

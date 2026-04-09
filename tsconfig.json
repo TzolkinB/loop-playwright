@@ -5,9 +5,18 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["tests", "*.config.ts", "*.config.mts"]
+  "include": [
+    "tests",
+    "pages",
+    "types",
+    "utils",
+    "data",
+    "*.config.ts",
+    "*.config.mts"
+  ]
 }
