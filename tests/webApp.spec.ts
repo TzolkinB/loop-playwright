@@ -13,17 +13,19 @@ test.describe('Web Application Task Board', () => {
 
   testScenarios.tasks.forEach(taskData => {
     test(taskData.testName, async () => {
-      // Step 1: Verify To Do column exists
-      await expect(taskBoard.toDoHeading(taskData.taskCount)).toBeVisible()
-
-      // Step 2: Find the task within To Do column
+      // Step 1: Verify column heading (includes task count when provided)
       await expect(
-        taskBoard.taskInToDoColumn(taskData.taskCount, taskData.taskTitle)
+        taskBoard.columnHeading(taskData.column, taskData.taskCount)
+      ).toBeVisible()
+
+      // Step 2: Find the task within the column
+      await expect(
+        taskBoard.taskInColumn(taskData.column, taskData.taskTitle)
       ).toBeVisible()
 
       // Step 3: Verify task has required tags
       const task = taskBoard.taskWithTags(
-        taskData.taskCount,
+        taskData.column,
         taskData.taskTitle,
         ...taskData.tags
       )

@@ -7,34 +7,38 @@ export default class TaskBoardPage {
     this.page = page
   }
 
-  toDoHeading(taskCount: number): Locator {
-    return this.page.getByRole('heading', {
-      level: 2,
-      name: `To Do (${taskCount})`,
+  column(columnName: string): Locator {
+    return this.page.locator('div').filter({
+      has: this.page.getByRole('heading', {
+        level: 2,
+        name: new RegExp(`^${columnName}`),
+      }),
     })
   }
 
-  toDoColumn(taskCount: number): Locator {
-    const heading = this.toDoHeading(taskCount)
-    return this.page.locator('div').filter({ has: heading })
+  columnHeading(columnName: string, taskCount: number): Locator {
+    return this.page.getByRole('heading', {
+      level: 2,
+      name: `${columnName} (${taskCount})`,
+    })
   }
 
-  taskInToDoColumn(taskCount: number, taskTitle: string): Locator {
-    const todoColumn = this.toDoColumn(taskCount)
-    return todoColumn.getByRole('heading', {
+  taskInColumn(columnName: string, taskTitle: string): Locator {
+    const col = this.column(columnName)
+    return col.getByRole('heading', {
       level: 3,
       name: taskTitle,
     })
   }
 
   taskWithTags(
-    taskCount: number,
+    columnName: string,
     taskTitle: string,
     ...tags: string[]
   ): Locator {
-    const todoColumn = this.toDoColumn(taskCount)
+    const col = this.column(columnName)
 
-    let taskLocator = todoColumn.locator('div').filter({ hasText: taskTitle })
+    let taskLocator = col.locator('div').filter({ hasText: taskTitle })
 
     for (const tag of tags) {
       taskLocator = taskLocator.filter({ hasText: tag })
