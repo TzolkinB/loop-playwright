@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test'
 import TaskBoardPage from '../pages/TaskBoardPage'
-import { getWebTaskBoardScenarios } from '../utils/dataLoader'
+import { getMobileTaskBoardScenarios } from '../utils/dataLoader'
 
-test.describe('Web Application Task Board', () => {
-  const testScenarios = getWebTaskBoardScenarios()
+test.describe('Mobile Application Task Board', () => {
+  const testScenarios = getMobileTaskBoardScenarios()
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
@@ -12,6 +12,9 @@ test.describe('Web Application Task Board', () => {
   testScenarios.tasks.forEach(taskData => {
     test(taskData.testName, async ({ page }) => {
       const taskBoard = new TaskBoardPage(page)
+      // Navigate to the mobile tasks view
+      await taskBoard.navigateToMobileTasks()
+
       // Step 1: Verify column heading (includes task count when provided)
       await expect(
         taskBoard.columnHeading(taskData.column, taskData.taskCount)

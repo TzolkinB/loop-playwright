@@ -1,10 +1,25 @@
-import { Page, Locator } from '@playwright/test'
+import { Page, Locator, expect } from '@playwright/test'
+import data from '../data/mobileTaskBoard.json'
 
 export default class TaskBoardPage {
   readonly page: Page
+  readonly mobileNavHeading: Locator
+  readonly mobileNavigationButton: Locator
+  readonly mobileAppHeading: Locator
 
   constructor(page: Page) {
     this.page = page
+    this.mobileAppHeading = this.page.getByRole('heading', {
+      level: 1,
+      name: data.mobileHeading,
+    })
+    this.mobileNavHeading = this.page.getByRole('heading', {
+      level: 2,
+      name: data.mobileHeading,
+    })
+    this.mobileNavigationButton = this.page
+      .getByRole('button')
+      .filter({ has: this.mobileNavHeading })
   }
 
   column(columnName: string): Locator {
@@ -46,5 +61,10 @@ export default class TaskBoardPage {
     }
 
     return taskLocator.last()
+  }
+
+  async navigateToMobileTasks() {
+    await this.mobileNavigationButton.click()
+    await expect(this.mobileAppHeading).toBeVisible()
   }
 }

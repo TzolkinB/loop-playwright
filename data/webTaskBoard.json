@@ -13,6 +13,13 @@
       "tags": ["Bug"],
       "column": "To Do",
       "taskCount": 2
+    },
+    {
+      "testName": "should display 'Design system updates' in 'In Progress' column with correct tags",
+      "taskTitle": "Design system updates",
+      "tags": ["Design"],
+      "column": "In Progress",
+      "taskCount": 1
     }
   ]
 }
