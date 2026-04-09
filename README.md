@@ -84,10 +84,10 @@ The hooks run automatically when you commit changes. If any checks fail, the com
 ├── data/                  # Test data (JSON scenarios)
 │   ├── webTaskBoard.json
 │   ├── mobileTaskBoard.json
-│   └── login.json
+│   └──
 ├── types/                 # TypeScript type definitions and enums
-│   ├── testData.ts        # ColumnName, TagName enums
-│   └── loginData.ts       # LoginConstants interface
+│   ├── taskBoard.ts       # ColumnName, TagName enums
+│   └── login.ts           # LoginConstants interface
 ├── .prettierrc            # Prettier configuration
 ├── .prettierignore        # Prettier ignore patterns
 ├── .gitignore             # Git ignore rules
@@ -106,7 +106,6 @@ This project uses a scalable, type-safe data-driven testing approach to minimize
 1. **Test Data** (`data/` folder) — JSON files define test scenarios
    - `webTaskBoard.json` - Web app task board test cases
    - `mobileTaskBoard.json` - Mobile app task board test cases
-   - `login.json` - Login UI constants
 
 2. **Type Safety** (`types/` folder) — TypeScript enums enforce valid values
    - `ColumnName` enum — restricts columns to "To Do", "In Progress", "Done"
