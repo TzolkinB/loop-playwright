@@ -1,8 +1,10 @@
 import { test as setup, expect } from '@playwright/test'
-import { LoginConstants } from '../types/login'
+import loginData from '../data/loginScenarios.json'
+import { LoginTypes } from '../types/login'
 
 const username = process.env.USER_NAME
 const password = process.env.PASSWORD
+const login: LoginTypes = loginData
 
 if (!username || !password) {
   throw new Error(
@@ -13,24 +15,17 @@ if (!username || !password) {
 setup('user authentication', async ({ page }) => {
   await page.goto('/')
 
-  //prettier-ignore
-  const {
-    USERNAME_LABEL,
-    PASSWORD_LABEL,
-    LOGIN_BUTTON,
-    DEFAULT_HEADING
-  } = LoginConstants
   const loginForm = page.locator('form')
   await expect(loginForm).toBeVisible()
-  await loginForm.getByLabel(USERNAME_LABEL).fill(username)
-  await loginForm.getByLabel(PASSWORD_LABEL).fill(password)
-  await page.getByRole('button', { name: LOGIN_BUTTON }).click()
+  await loginForm.getByLabel(login.usernameLabel).fill(username)
+  await loginForm.getByLabel(login.passwordLabel).fill(password)
+  await page.getByRole('button', { name: login.loginButton }).click()
 
   // App defaults to "Web Application" heading after successful login
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: DEFAULT_HEADING,
+      name: login.defaultHeading,
     })
   ).toBeVisible()
 

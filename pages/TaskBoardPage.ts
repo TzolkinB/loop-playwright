@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test'
-import { AppHeading, TagName } from '../types/taskBoard'
+import { AppType, ColumnName, TagName } from '../types/taskBoard'
 
 export default class TaskBoardPage {
   readonly page: Page
@@ -11,18 +11,18 @@ export default class TaskBoardPage {
     this.page = page
     this.mobileAppHeading = this.page.getByRole('heading', {
       level: 1,
-      name: AppHeading.MOBILE,
+      name: AppType.MOBILE,
     })
     this.mobileNavHeading = this.page.getByRole('heading', {
       level: 2,
-      name: AppHeading.MOBILE,
+      name: AppType.MOBILE,
     })
     this.mobileNavigationButton = this.page
       .getByRole('button')
       .filter({ has: this.mobileNavHeading })
   }
 
-  column(columnName: string): Locator {
+  column(columnName: ColumnName): Locator {
     return this.page.locator('div').filter({
       has: this.page.getByRole('heading', {
         level: 2,
@@ -32,14 +32,14 @@ export default class TaskBoardPage {
     })
   }
 
-  columnHeading(columnName: string, taskCount: number): Locator {
+  columnHeading(columnName: ColumnName, taskCount: number): Locator {
     return this.page.getByRole('heading', {
       level: 2,
       name: `${columnName} (${taskCount})`,
     })
   }
 
-  taskInColumn(columnName: string, taskTitle: string): Locator {
+  taskInColumn(columnName: ColumnName, taskTitle: string): Locator {
     const col = this.column(columnName)
     return col.getByRole('heading', {
       level: 3,
@@ -48,7 +48,7 @@ export default class TaskBoardPage {
   }
 
   taskWithTags(
-    columnName: string,
+    columnName: ColumnName,
     taskTitle: string,
     ...tags: TagName[]
   ): Locator {
@@ -61,6 +61,13 @@ export default class TaskBoardPage {
     }
 
     return taskLocator.last()
+  }
+
+  appHeading(appType: AppType): Locator {
+    return this.page.getByRole('heading', {
+      level: 1,
+      name: appType,
+    })
   }
 
   async navigateToMobileTasks() {
