@@ -1,3 +1,8 @@
+export enum AppType {
+  MOBILE = 'Mobile Application',
+  WEB = 'Web Application',
+}
+
 export enum ColumnName {
   TODO = 'To Do',
   IN_PROGRESS = 'In Progress',
@@ -11,13 +16,9 @@ export enum TagName {
   DESIGN = 'Design',
 }
 
-export enum AppHeading {
-  MOBILE = 'Mobile Application',
-  WEB = 'Web Application',
-}
-
-export interface TaskTestCase {
-  testName: string
+export interface TaskBoardTypes {
+  appType: AppType
+  requiresNavigation: boolean
   taskTitle: string
   tags: TagName[]
   column: ColumnName
@@ -25,5 +26,5 @@ export interface TaskTestCase {
 }
 
 export interface TestScenario {
-  tasks: TaskTestCase[]
+  scenarios: TaskBoardTypes[]
 }
