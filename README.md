@@ -62,9 +62,63 @@ This test-suite has a `pages` folder for POM, which is popular in Playwright, a 
 └── package.json           # Dependencies and scripts
 ```
 
-## Data-Driven Testing Architecture
+## Architecture
 
-This project uses a scalable, type-safe data-driven testing approach to minimize code duplication and improve maintainability.
+The suite is organized into four layers. Each layer has a single responsibility — changes in one do not require changes in another.
+
+```
+┌──────────────────────────────────────────────────────┐
+│                     Test Layer                        │
+│  tests/taskBoard.spec.ts  tests/login.spec.ts         │
+│  tests/auth.setup.ts                                  │
+└───────────────────────┬──────────────────────────────┘
+                        │ instantiates
+┌───────────────────────▼──────────────────────────────┐
+│                  Page Object Layer                    │
+│  pages/TaskBoardPage.ts                               │
+│  Locators · navigation actions                        │
+└───────────────────────┬──────────────────────────────┘
+                        │ receives typed data from
+┌───────────────────────▼──────────────────────────────┐
+│                     Data Layer                        │
+│  data/taskBoardScenarios.json                         │
+│  data/loginScenarios.json                             │
+└───────────────────────┬──────────────────────────────┘
+                        │ typed by
+┌───────────────────────▼──────────────────────────────┐
+│                     Type Layer                        │
+│  types/taskBoard.ts  types/login.ts                   │
+│  Interfaces · Enums                                   │
+└──────────────────────────────────────────────────────┘
+```
+
+### Layer Responsibilities
+
+| Layer           | Files                                    | Responsibility                                                            |
+| --------------- | ---------------------------------------- | ------------------------------------------------------------------------- |
+| **Test**        | `tests/*.spec.ts`, `tests/auth.setup.ts` | Orchestrates scenarios; no hardcoded selectors or raw data values         |
+| **Page Object** | `pages/TaskBoardPage.ts`                 | Encapsulates all locator logic and navigation actions                     |
+| **Data**        | `data/*.json`                            | Defines test scenarios; adding a scenario requires no code change         |
+| **Type**        | `types/*.ts`                             | Enforces valid values at compile time via TypeScript interfaces and enums |
+
+### Authentication Flow
+
+Authentication is handled by a dedicated Playwright `setup` project that runs before the main browser projects.
+
+```
+auth.setup.ts  →  logs in  →  saves storageState  →  playwright/.auth.json
+                                                              │
+                                     chromium / firefox / webkit projects
+                                     load storageState and skip re-login
+```
+
+- `login-tests` runs in an isolated, unauthenticated context to test the login page directly.
+- `chromium`, `firefox`, and `webkit` all depend on `setup` and share the same saved auth state.
+- The path to the auth file is set via the `AUTH_FILE` environment variable (`.env`), keeping credentials out of source control.
+
+## Data-Driven Testing
+
+This project uses a scalable, type-safe data-driven approach to minimize code duplication and improve maintainability.
 
 ### How It Works
 
