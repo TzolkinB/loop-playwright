@@ -20,6 +20,34 @@ describe('validateLoginBody', () => {
     expect(result).toEqual({ ok: true, username: 'demo', password: 'pw' })
   })
 
+  describe('field length limit of 256 characters', () => {
+    const at = 'a'.repeat(256)
+    const over = 'a'.repeat(257)
+
+    it('accepts exactly 256 characters in both fields, unmodified', () => {
+      expect(validateLoginBody({ username: at, password: at })).toEqual({
+        ok: true,
+        username: at,
+        password: at,
+      })
+    })
+
+    it.each([
+      ['username', { username: over, password: 'pw' }],
+      ['password', { username: 'demo', password: over }],
+      ['both fields', { username: over, password: over }],
+    ])('rejects 257 characters in %s', (_label, body) => {
+      expect(validateLoginBody(body)).toEqual({ ok: false })
+    })
+
+    it('does not trim before counting', () => {
+      const padded = ' '.repeat(257)
+      expect(validateLoginBody({ username: padded, password: 'pw' })).toEqual({
+        ok: false,
+      })
+    })
+  })
+
   describe('rejects anything else', () => {
     it.each([
       ['missing username', { password: 'pw' }],

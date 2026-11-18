@@ -42,6 +42,23 @@ const TYPES = {
   '.map': 'application/json; charset=utf-8',
 }
 
+// Sent on every response, errors included. The page loads only its own scripts,
+// styles and requests, and cannot be framed.
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'no-referrer',
+  'Content-Security-Policy':
+    "default-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'",
+}
+
+function sendText(res, status, text, headers = {}) {
+  res.writeHead(status, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    ...headers,
+  })
+  res.end(text)
+}
+
 async function serveFile(res, file) {
   const body = await readFile(file)
   res.writeHead(200, {
@@ -75,7 +92,7 @@ async function readJson(req, limit = 4096) {
 
 async function handleLogin(req, res) {
   if (req.method !== 'POST') {
-    res.writeHead(405, { Allow: 'POST' }).end()
+    sendText(res, 405, 'Method not allowed', { Allow: 'POST' })
     return
   }
 
@@ -103,13 +120,13 @@ async function handleRequest(req, res) {
   try {
     pathname = new URL(req.url ?? '/', `http://${HOST}`).pathname
   } catch {
-    res.writeHead(400).end('Bad request')
+    sendText(res, 400, 'Bad request')
     return
   }
 
   const resolved = resolveStaticPath(DIST, pathname)
   if (resolved.status === 400) {
-    res.writeHead(400).end('Bad request')
+    sendText(res, 400, 'Bad request')
     return
   }
 
@@ -123,7 +140,11 @@ async function handleRequest(req, res) {
   }
 
   if (resolved.status === 403) {
-    res.writeHead(403).end('Forbidden')
+    sendText(res, 403, 'Forbidden')
+    return
+  }
+  if (resolved.status === 404) {
+    sendText(res, 404, 'Not found')
     return
   }
 
@@ -133,24 +154,27 @@ async function handleRequest(req, res) {
     // A missing file with an extension is a real 404, so broken asset links stay visible.
     // Extensionless paths fall back to the app shell so client-side routes keep working.
     if (extname(pathname)) {
-      res.writeHead(404).end('Not found')
+      sendText(res, 404, 'Not found')
       return
     }
     try {
       await serveFile(res, join(DIST, 'index.html'))
     } catch {
-      res.writeHead(503).end('Build missing: run `npm run build:app` first.')
+      sendText(res, 503, 'Build missing: run `npm run build:app` first.')
     }
   }
 }
 
 createServer((req, res) => {
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    res.setHeader(name, value)
+  }
   // A failure while handling one request, such as a client hanging up mid-body,
   // must never take the whole server down.
   handleRequest(req, res).catch(error => {
     console.error(`Request failed: ${error.message}`)
-    if (!res.headersSent) res.writeHead(500)
-    res.end()
+    if (!res.headersSent) sendText(res, 500, 'Server error')
+    else res.end()
   })
 }).listen(PORT, HOST, () => {
   console.log(`Demo app listening on http://${HOST}:${PORT}`)

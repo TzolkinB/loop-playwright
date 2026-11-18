@@ -51,6 +51,26 @@ describe('resolveStaticPath', () => {
     )
   })
 
+  describe('dotfiles are refused', () => {
+    it.each([
+      '/.env',
+      '/.git',
+      '/assets/.hidden',
+      '/assets/.hidden.js',
+      '/%2eenv',
+      '/%2Eenv',
+    ])('%s returns 404', pathname => {
+      expect(resolveStaticPath(ROOT, pathname)).toEqual({ status: 404 })
+    })
+
+    it.each(['/', '/assets/app.js', '/a.b/c', '/.well-known/'])(
+      '%s is still allowed',
+      pathname => {
+        expect(resolveStaticPath(ROOT, pathname)).toHaveProperty('file')
+      }
+    )
+  })
+
   describe('hostile input never resolves outside the build folder', () => {
     it.each([
       '/..\\..\\package.json',
@@ -71,7 +91,7 @@ describe('resolveStaticPath', () => {
       if ('file' in result) {
         expect(result.file.startsWith(ROOT)).toBe(true)
       } else {
-        expect([400, 403]).toContain(result.status)
+        expect([400, 403, 404]).toContain(result.status)
       }
     })
   })
