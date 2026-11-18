@@ -26,9 +26,9 @@ jobs:
         run: npm run test:unit
 
       - name: Install Playwright Browsers
-        # Normally 40-70 seconds. A stalled download should fail here, clearly,
-        # not use up the whole job budget and show up as a cancelled run.
-        timeout-minutes: 5
+        # Normally 40 seconds to 2.5 minutes. A stalled download should fail here,
+        # clearly, not use up the whole job budget and show up as a cancelled run.
+        timeout-minutes: 10
         run: npx playwright install --with-deps
 
       - name: Run linting
