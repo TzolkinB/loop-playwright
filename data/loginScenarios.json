@@ -2,5 +2,12 @@
   "usernameLabel": "Username",
   "passwordLabel": "Password",
   "loginButton": "Sign in",
-  "defaultHeading": "Web Application"
+  "defaultHeading": "Web Application",
+  "invalidLogins": [
+    {
+      "name": "wrong password",
+      "password": "not-the-demo-password",
+      "expectedAlert": "Invalid username or password."
+    }
+  ]
 }
