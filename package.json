@@ -30,7 +30,7 @@
   "homepage": "https://github.com/TzolkinB/loop-playwright#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.65.1",
     "@types/node": "^25.9.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
