@@ -173,7 +173,7 @@ This project loads environment variables from .env using dotenv in Playwright co
 
 - **Browsers:** Chromium, Firefox, and Webkit
 - **Retries:** 2 on CI, 0 locally
-- **Reporter:** HTML report
+- **Reporter:** HTML report, plus a per-test list in the log on CI
 
 ### Projects
 
