@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test'
  */
 import dotenv from 'dotenv'
 import path from 'path'
-dotenv.config({ path: path.resolve(__dirname, '.env') })
+dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true })
 
 // The Demo app is served locally. Set BASE_URL to point the suite at another host.
 const PORT = process.env.PORT ?? '4173'
