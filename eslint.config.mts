@@ -11,6 +11,7 @@ export default defineConfig([
     ignores: [
       'node_modules/',
       'playwright-report/',
+      'app/dist/',
       'test-results/',
       'coverage/',
       '*.min.js',
@@ -36,6 +37,14 @@ export default defineConfig([
     rules: {
       'newline-per-chained-call': ['error', { ignoreChainWithDepth: 3 }],
     },
+  },
+  {
+    files: ['app/src/**/*.{ts,tsx}'],
+    languageOptions: { globals: globals.browser },
+  },
+  {
+    files: ['app/**/*.mjs', 'app/vite.config.mts'],
+    languageOptions: { globals: globals.node },
   },
   prettierConfig,
 ])
