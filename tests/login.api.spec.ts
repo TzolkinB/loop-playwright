@@ -1,3 +1,4 @@
+import net from 'node:net'
 import { test, expect } from '@playwright/test'
 import { credentials } from '../utils/credentials'
 
@@ -48,6 +49,35 @@ test.describe('POST /api/login', () => {
 
     expect(response.status()).toBe(405)
   })
+})
+
+test('keeps serving after a client aborts mid-request', async ({
+  request,
+  baseURL,
+}) => {
+  const { hostname, port } = new URL(baseURL!)
+
+  // The request fixture cannot abort mid-body, so use a raw socket: promise
+  // 100 bytes, send 6, then hang up.
+  await new Promise<void>(resolve => {
+    const socket = net.connect(Number(port), hostname, () => {
+      socket.write(
+        `POST /api/login HTTP/1.1\r\nHost: ${hostname}\r\n` +
+          'Content-Type: application/json\r\nContent-Length: 100\r\n\r\n{"user',
+        () => socket.destroy()
+      )
+    })
+    socket.on('error', () => {})
+    socket.on('close', () => resolve())
+  })
+
+  // Give the server time to notice the abort. A crash shows up within milliseconds.
+  await new Promise(resolve => setTimeout(resolve, 300))
+
+  const response = await request.post('/api/login', {
+    data: { username, password },
+  })
+  expect(response.status()).toBe(200)
 })
 
 test('does not ship the password in the page or its scripts', async ({

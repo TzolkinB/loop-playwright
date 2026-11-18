@@ -99,7 +99,7 @@ async function handleLogin(req, res) {
   sendJson(res, 200, { ok: true })
 }
 
-createServer(async (req, res) => {
+async function handleRequest(req, res) {
   let file
   let pathname
   try {
@@ -142,6 +142,16 @@ createServer(async (req, res) => {
       res.writeHead(503).end('Build missing: run `npm run build:app` first.')
     }
   }
+}
+
+createServer((req, res) => {
+  // A failure while handling one request, such as a client hanging up mid-body,
+  // must never take the whole server down.
+  handleRequest(req, res).catch(error => {
+    console.error(`Request failed: ${error.message}`)
+    if (!res.headersSent) res.writeHead(500)
+    res.end()
+  })
 }).listen(PORT, HOST, () => {
   console.log(`Demo app listening on http://${HOST}:${PORT}`)
 })
