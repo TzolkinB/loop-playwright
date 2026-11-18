@@ -26,6 +26,7 @@ This project uses the following tools for development and testing:
 | `npm run test:ui`     | `playwright test --ui`    | Run tests with Playwright's interactive UI mode |
 | `npm run test:debug`  | `playwright test --debug` | Run tests in debug mode with browser DevTools   |
 | `npm run test:report` | `playwright show-report`  | Open the HTML test report from the last run     |
+| `npm run test:unit`   | `vitest run`              | Run the unit tests (Vitest, no browser)         |
 
 ### Demo App Scripts
 

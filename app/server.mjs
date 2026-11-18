@@ -2,8 +2,10 @@
 import { createHash, timingSafeEqual } from 'node:crypto'
 import { createServer } from 'node:http'
 import { readFile } from 'node:fs/promises'
-import { extname, join, normalize } from 'node:path'
+import { extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { validateLoginBody } from './lib/loginBody.mjs'
+import { resolveStaticPath } from './lib/staticPath.mjs'
 
 const HOST = '127.0.0.1'
 const PORT = Number(process.env.PORT ?? 4173)
@@ -77,11 +79,8 @@ async function handleLogin(req, res) {
     return
   }
 
-  const body = await readJson(req)
-  if (
-    typeof body?.username !== 'string' ||
-    typeof body?.password !== 'string'
-  ) {
+  const login = validateLoginBody(await readJson(req))
+  if (!login.ok) {
     sendJson(res, 400, {
       error: 'Expected a JSON body with a username and a password.',
     })
@@ -89,8 +88,8 @@ async function handleLogin(req, res) {
   }
 
   // Check both fields every time so timing does not reveal which one was wrong.
-  const userOk = matches(body.username, USER_NAME)
-  const passwordOk = matches(body.password, PASSWORD)
+  const userOk = matches(login.username, USER_NAME)
+  const passwordOk = matches(login.password, PASSWORD)
   if (!(userOk && passwordOk)) {
     sendJson(res, 401, { error: 'Invalid username or password.' })
     return
@@ -100,12 +99,16 @@ async function handleLogin(req, res) {
 }
 
 async function handleRequest(req, res) {
-  let file
   let pathname
   try {
     pathname = new URL(req.url ?? '/', `http://${HOST}`).pathname
-    file = normalize(join(DIST, decodeURIComponent(pathname)))
   } catch {
+    res.writeHead(400).end('Bad request')
+    return
+  }
+
+  const resolved = resolveStaticPath(DIST, pathname)
+  if (resolved.status === 400) {
     res.writeHead(400).end('Bad request')
     return
   }
@@ -119,16 +122,13 @@ async function handleRequest(req, res) {
     return
   }
 
-  if (!file.startsWith(DIST)) {
+  if (resolved.status === 403) {
     res.writeHead(403).end('Forbidden')
     return
   }
 
   try {
-    await serveFile(
-      res,
-      pathname.endsWith('/') ? join(file, 'index.html') : file
-    )
+    await serveFile(res, resolved.file)
   } catch {
     // A missing file with an extension is a real 404, so broken asset links stay visible.
     // Extensionless paths fall back to the app shell so client-side routes keep working.
