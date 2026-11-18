@@ -6,6 +6,13 @@ import { fileURLToPath } from 'node:url'
 
 const HOST = '127.0.0.1'
 const PORT = Number(process.env.PORT ?? 4173)
+
+if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
+  console.error(
+    `Invalid PORT "${process.env.PORT}": expected an integer from 1 to 65535.`
+  )
+  process.exit(1)
+}
 const DIST = fileURLToPath(new URL('./dist/', import.meta.url))
 
 const TYPES = {
@@ -48,7 +55,12 @@ createServer(async (req, res) => {
       pathname.endsWith('/') ? join(file, 'index.html') : file
     )
   } catch {
-    // Unknown paths fall back to the app shell so client-side routes keep working.
+    // A missing file with an extension is a real 404, so broken asset links stay visible.
+    // Extensionless paths fall back to the app shell so client-side routes keep working.
+    if (extname(pathname)) {
+      res.writeHead(404).end('Not found')
+      return
+    }
     try {
       await serveFile(res, join(DIST, 'index.html'))
     } catch {

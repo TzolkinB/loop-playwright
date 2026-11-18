@@ -55,7 +55,7 @@
     "**/*.{json,md,yml,yaml}": [
       "prettier --write"
     ],
-    "app/**/*.{ts,tsx,mjs}": [
+    "app/**/*.{ts,tsx,mts,mjs}": [
       "eslint --fix",
       "prettier --write"
     ],
