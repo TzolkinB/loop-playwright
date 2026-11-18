@@ -1,16 +1,10 @@
 import { test as setup, expect } from '@playwright/test'
 import loginData from '../data/loginScenarios.json'
 import { LoginTypes } from '../types/login'
+import { credentials } from '../utils/credentials'
 
-const username = process.env.USER_NAME
-const password = process.env.PASSWORD
+const { username, password } = credentials()
 const login: LoginTypes = loginData
-
-if (!username || !password) {
-  throw new Error(
-    'Missing required environment variables for authentication setup: USER_NAME and PASSWORD.'
-  )
-}
 
 setup('user authentication', async ({ page }) => {
   await page.goto('/')
