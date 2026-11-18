@@ -51,6 +51,97 @@ test.describe('POST /api/login', () => {
   })
 })
 
+test.describe('security headers', () => {
+  const paths = [
+    { name: 'the page', method: 'GET', path: '/' },
+    { name: 'a 404', method: 'GET', path: '/missing.js' },
+    { name: 'an unknown API route', method: 'GET', path: '/api/nope' },
+    { name: 'a 405', method: 'GET', path: '/api/login' },
+    { name: 'a refused dotfile', method: 'GET', path: '/.env' },
+    {
+      name: 'an escape attempt',
+      method: 'GET',
+      path: '/%2e%2e%2fpackage.json',
+    },
+  ]
+
+  for (const { name, path } of paths) {
+    test(`are present on ${name}`, async ({ request }) => {
+      const response = await request.get(path)
+      const headers = response.headers()
+
+      expect(headers['x-content-type-options']).toBe('nosniff')
+      expect(headers['referrer-policy']).toBeTruthy()
+      expect(headers['content-security-policy']).toContain("default-src 'self'")
+      expect(headers['content-security-policy']).toContain(
+        "frame-ancestors 'none'"
+      )
+    })
+  }
+
+  test('are present on a built asset', async ({ request }) => {
+    const page = await request.get('/')
+    const asset = (await page.text()).match(
+      /(?:src|href)="(\/assets\/[^"]+)"/
+    )![1]
+    const response = await request.get(asset)
+
+    expect(response.status()).toBe(200)
+    expect(response.headers()['x-content-type-options']).toBe('nosniff')
+    expect(response.headers()['content-security-policy']).toBeTruthy()
+  })
+
+  test('are present on login responses', async ({ request }) => {
+    const ok = await request.post('/api/login', {
+      data: { username, password },
+    })
+    const bad = await request.post('/api/login', {
+      data: { username, password: `${password}-wrong` },
+    })
+    const malformed = await request.post('/api/login', { data: {} })
+
+    for (const response of [ok, bad, malformed]) {
+      expect(response.headers()['x-content-type-options']).toBe('nosniff')
+      expect(response.headers()['content-security-policy']).toBeTruthy()
+    }
+  })
+})
+
+test.describe('error responses', () => {
+  test('carry an explicit Content-Type', async ({ request }) => {
+    for (const path of ['/missing.js', '/.env', '/%2e%2e%2fpackage.json']) {
+      const response = await request.get(path)
+
+      expect(response.status()).toBeGreaterThanOrEqual(400)
+      expect(response.headers()['content-type']).toContain('charset=utf-8')
+    }
+
+    const notAllowed = await request.get('/api/login')
+    expect(notAllowed.headers()['content-type']).toBeTruthy()
+  })
+
+  test('refuse a dotfile with 404', async ({ request }) => {
+    const response = await request.get('/.env')
+
+    expect(response.status()).toBe(404)
+  })
+})
+
+test('accepts 256-character credentials and rejects 257', async ({
+  request,
+}) => {
+  const at = await request.post('/api/login', {
+    data: { username: 'a'.repeat(256), password: 'b'.repeat(256) },
+  })
+  const over = await request.post('/api/login', {
+    data: { username: 'a'.repeat(257), password },
+  })
+
+  // Valid length but wrong credentials is a 401, not a 400.
+  expect(at.status()).toBe(401)
+  expect(over.status()).toBe(400)
+})
+
 test('keeps serving after a client aborts mid-request', async ({
   request,
   baseURL,

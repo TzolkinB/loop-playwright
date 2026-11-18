@@ -1,4 +1,4 @@
-import { join, normalize, sep } from 'node:path'
+import { basename, join, normalize, sep } from 'node:path'
 
 /**
  * Maps a request pathname to a file inside the build folder.
@@ -9,8 +9,9 @@ import { join, normalize, sep } from 'node:path'
  *
  * @param {string} distDir Absolute path of the build folder.
  * @param {string} pathname Request pathname, still percent-encoded.
- * @returns {{ file: string } | { status: 400 | 403 }} The file to serve, or the
- *   status to answer with: 400 for malformed encoding, 403 for an escape attempt.
+ * @returns {{ file: string } | { status: 400 | 403 | 404 }} The file to serve, or the
+ *   status to answer with: 400 for malformed encoding, 403 for an escape attempt,
+ *   404 for a dotfile such as `.env`.
  */
 export function resolveStaticPath(distDir, pathname) {
   // End the root with a separator so a sibling folder that merely shares the
@@ -25,6 +26,12 @@ export function resolveStaticPath(distDir, pathname) {
   }
 
   if (!file.startsWith(root)) return { status: 403 }
+
+  // Never serve a file whose name starts with a dot, even if one ever lands
+  // in the build. A trailing slash means a folder, which serves its index.
+  if (!pathname.endsWith('/') && basename(file).startsWith('.')) {
+    return { status: 404 }
+  }
 
   return { file: pathname.endsWith('/') ? join(file, 'index.html') : file }
 }
