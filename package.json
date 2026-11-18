@@ -11,8 +11,10 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "type-check": "tsc --noEmit",
-    "prepare": "husky"
+    "type-check": "tsc --noEmit && tsc --noEmit -p app",
+    "prepare": "husky",
+    "build:app": "vite build app",
+    "start:app": "node app/server.mjs"
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,9 @@
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
     "dotenv": "^17.4.2",
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
@@ -39,7 +44,8 @@
     "jiti": "^2.7.0",
     "lint-staged": "^16.4.0",
     "prettier": "3.8.3",
-    "typescript-eslint": "^8.59.4"
+    "typescript-eslint": "^8.59.4",
+    "vite": "^8.3.8"
   },
   "lint-staged": {
     "tests/**/*.{js,ts}": [
@@ -48,6 +54,17 @@
     ],
     "**/*.{json,md,yml,yaml}": [
       "prettier --write"
+    ],
+    "app/**/*.{ts,tsx,mts,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "app/**/*.{css,html}": [
+      "prettier --write"
     ]
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   }
 }

@@ -27,14 +27,21 @@ This project uses the following tools for development and testing:
 | `npm run test:debug`  | `playwright test --debug` | Run tests in debug mode with browser DevTools   |
 | `npm run test:report` | `playwright show-report`  | Open the HTML test report from the last run     |
 
+### Demo App Scripts
+
+| Script              | Command               | Description                                         |
+| ------------------- | --------------------- | --------------------------------------------------- |
+| `npm run build:app` | `vite build app`      | Build the Demo app into `app/dist`                  |
+| `npm run start:app` | `node app/server.mjs` | Serve the built Demo app on `http://127.0.0.1:4173` |
+
 ### Code Quality Scripts
 
-| Script                 | Command              | Description                                                |
-| ---------------------- | -------------------- | ---------------------------------------------------------- |
-| `npm run lint`         | `eslint .`           | Check code for linting errors and style issues             |
-| `npm run format`       | `prettier --write .` | Format all code files using Prettier                       |
-| `npm run format:check` | `prettier --check .` | Check if code is properly formatted without changing files |
-| `npm run type-check`   | `tsc --noEmit`       | Run TypeScript compiler to check for type errors           |
+| Script                 | Command                          | Description                                                |
+| ---------------------- | -------------------------------- | ---------------------------------------------------------- |
+| `npm run lint`         | `eslint .`                       | Check code for linting errors and style issues             |
+| `npm run format`       | `prettier --write .`             | Format all code files using Prettier                       |
+| `npm run format:check` | `prettier --check .`             | Check if code is properly formatted without changing files |
+| `npm run type-check`   | `tsc --noEmit` (tests, then app) | Run TypeScript compiler to check for type errors           |
 
 ## Project Structure
 
@@ -201,16 +208,53 @@ This project loads environment variables from .env using dotenv in Playwright co
    npx playwright install
    ```
 
-3. **Run tests:**
+3. **Create a `.env` file** in the repo root. The tests read these values to sign in, and `.env` is gitignored:
+
+   ```bash
+   USER_NAME=demo
+   PASSWORD=<a throwaway password>
+   AUTH_FILE=playwright/.auth.json
+   ```
+
+4. **Run tests:**
 
    ```bash
    npm test
    ```
 
-4. **View test results:**
+   Playwright builds and starts the Demo app itself (`webServer` in `playwright.config.ts`), runs the suite against it, and stops it afterwards. No separate step is needed.
+
+5. **View test results:**
+
    ```bash
    npm run test:report
    ```
+
+## Running the Demo App
+
+The tests run against a small React, TypeScript and Vite task board in `app/`. To run it on its own, for example to look at it in a browser:
+
+```bash
+npm run build:app
+npm run start:app
+```
+
+Then open http://127.0.0.1:4173. It listens on localhost only. Set `PORT` to use a different port.
+
+### Running Tests
+
+```bash
+npm test                                                         # whole suite, all browsers
+npx playwright test --project=chromium                           # one browser
+npx playwright test tests/login.spec.ts --project=login-tests    # one file
+npm run test:ui                                                  # interactive UI mode
+```
+
+To run the suite against a server you started yourself, or another host, set `BASE_URL`. Playwright then skips starting the Demo app:
+
+```bash
+BASE_URL=http://127.0.0.1:4173 npm test
+```
 
 ## Pre-commit Hooks
 
