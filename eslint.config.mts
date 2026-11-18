@@ -19,7 +19,11 @@ export default defineConfig([
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  eslintPluginPlaywright.configs['flat/recommended'],
+  // Playwright rules do not apply to the Vitest unit tests, which use a different test API.
+  {
+    ...eslintPluginPlaywright.configs['flat/recommended'],
+    ignores: ['unit/**'],
+  },
   {
     files: ['tests/**/*.{ts,mts,cts}'],
     languageOptions: {
