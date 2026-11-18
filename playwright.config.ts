@@ -45,7 +45,7 @@ export default defineConfig({
     },
     {
       name: 'login-tests',
-      testMatch: '**/login.spec.ts',
+      testMatch: '**/login*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         // No storageState - fresh browser context for login testing
@@ -54,7 +54,7 @@ export default defineConfig({
     },
     {
       name: 'chromium',
-      testIgnore: '**/login.spec.ts', // Skip login test in authenticated projects
+      testIgnore: '**/login*.spec.ts', // Skip login tests in authenticated projects
       use: {
         ...devices['Desktop Chrome'],
         storageState: process.env.AUTH_FILE!,
@@ -64,7 +64,7 @@ export default defineConfig({
 
     {
       name: 'firefox',
-      testIgnore: '**/login.spec.ts', // Skip login test in authenticated projects
+      testIgnore: '**/login*.spec.ts', // Skip login tests in authenticated projects
       use: {
         ...devices['Desktop Firefox'],
         storageState: process.env.AUTH_FILE!,
@@ -74,7 +74,7 @@ export default defineConfig({
 
     {
       name: 'webkit',
-      testIgnore: '**/login.spec.ts', // Skip login test in authenticated projects
+      testIgnore: '**/login*.spec.ts', // Skip login tests in authenticated projects
       use: {
         ...devices['Desktop Safari'],
         storageState: process.env.AUTH_FILE!,

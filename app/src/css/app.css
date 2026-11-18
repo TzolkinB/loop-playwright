@@ -28,3 +28,34 @@ body {
     --page-padding: 32px;
   }
 }
+
+/* Login and shell: stacked for narrow screens, constrained width on larger ones. */
+.login {
+  display: grid;
+  gap: 8px;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.login input,
+button {
+  font: inherit;
+  padding: 8px 12px;
+}
+
+.login p[role='alert'] {
+  margin: 0;
+  color: #b3261e;
+}
+
+.shell-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.shell-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}

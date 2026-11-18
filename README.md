@@ -208,12 +208,10 @@ This project loads environment variables from .env using dotenv in Playwright co
    npx playwright install
    ```
 
-3. **Create a `.env` file** in the repo root. The tests read these values to sign in, and `.env` is gitignored:
+3. **Create a `.env` file** from the committed example, then set `PASSWORD` to a throwaway value. The tests and the Demo app read the same values, and `.env` is gitignored:
 
    ```bash
-   USER_NAME=demo
-   PASSWORD=<a throwaway password>
-   AUTH_FILE=playwright/.auth.json
+   cp .env.example .env
    ```
 
 4. **Run tests:**
