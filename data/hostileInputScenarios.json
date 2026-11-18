@@ -1,0 +1,200 @@
+{
+  "invalidMessage": "Invalid username or password.",
+  "loginPayloads": [
+    {
+      "name": "SQL injection in username",
+      "category": "sql-injection",
+      "rawBody": "{\"username\":\"admin' OR '1'='1' --\",\"password\":\"x\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": ["OR '1'='1'"]
+    },
+    {
+      "name": "SQL injection stacked query in password",
+      "category": "sql-injection",
+      "rawBody": "{\"username\":\"demo\",\"password\":\"x'; DROP TABLE users; --\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": ["DROP TABLE"]
+    },
+    {
+      "name": "NoSQL operator objects",
+      "category": "nosql-injection",
+      "rawBody": "{\"username\":{\"$ne\":null},\"password\":{\"$ne\":null}}",
+      "expectedStatus": 400,
+      "mustNotEcho": ["$ne"]
+    },
+    {
+      "name": "script tag in username",
+      "category": "script-html",
+      "rawBody": "{\"username\":\"<script>alert(1)</script>\",\"password\":\"x\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": ["<script>", "alert(1)"]
+    },
+    {
+      "name": "HTML event handler in password",
+      "category": "script-html",
+      "rawBody": "{\"username\":\"demo\",\"password\":\"<img src=x onerror=alert(1)>\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": ["onerror", "<img"]
+    },
+    {
+      "name": "command substitution",
+      "category": "command-injection",
+      "rawBody": "{\"username\":\"$(id)\",\"password\":\"`id`; cat /etc/passwd\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": ["$(id)", "cat /etc/passwd", "uid="]
+    },
+    {
+      "name": "template syntax",
+      "category": "template-injection",
+      "rawBody": "{\"username\":\"{{7*7}}\",\"password\":\"${7*7}\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": ["{{7*7}}", "${7*7}"]
+    },
+    {
+      "name": "CRLF header injection",
+      "category": "crlf",
+      "rawBody": "{\"username\":\"demo\\r\\nSet-Cookie: pwn=1\",\"password\":\"x\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": ["Set-Cookie: pwn"]
+    },
+    {
+      "name": "NUL character",
+      "category": "nul",
+      "rawBody": "{\"username\":\"demo\\u0000admin\",\"password\":\"x\\u0000\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": ["admin"]
+    },
+    {
+      "name": "prototype pollution via __proto__",
+      "category": "prototype-pollution",
+      "rawBody": "{\"__proto__\":{\"username\":\"demo\",\"password\":\"x\"}}",
+      "expectedStatus": 400,
+      "mustNotEcho": ["__proto__"]
+    },
+    {
+      "name": "prototype pollution via constructor",
+      "category": "prototype-pollution",
+      "rawBody": "{\"constructor\":{\"prototype\":{\"admin\":true}},\"username\":\"demo\",\"password\":\"x\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": ["constructor", "admin"]
+    },
+    {
+      "name": "number fields",
+      "category": "type-confusion",
+      "rawBody": "{\"username\":1,\"password\":2}",
+      "expectedStatus": 400,
+      "mustNotEcho": []
+    },
+    {
+      "name": "array fields",
+      "category": "type-confusion",
+      "rawBody": "{\"username\":[\"demo\"],\"password\":[\"x\"]}",
+      "expectedStatus": 400,
+      "mustNotEcho": []
+    },
+    {
+      "name": "null fields",
+      "category": "type-confusion",
+      "rawBody": "{\"username\":null,\"password\":null}",
+      "expectedStatus": 400,
+      "mustNotEcho": []
+    },
+    {
+      "name": "duplicate keys",
+      "category": "duplicate-keys",
+      "rawBody": "{\"username\":\"a\",\"username\":\"b\",\"password\":\"p\",\"password\":\"q\"}",
+      "expectedStatus": 401,
+      "mustNotEcho": []
+    },
+    {
+      "name": "257-character username",
+      "category": "over-length",
+      "rawBody": "{\"username\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"password\":\"x\"}",
+      "expectedStatus": 400,
+      "mustNotEcho": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+    },
+    {
+      "name": "body that is not JSON",
+      "category": "malformed",
+      "rawBody": "not json at all",
+      "expectedStatus": 400,
+      "mustNotEcho": ["not json"]
+    }
+  ],
+  "pathTraversal": [
+    {
+      "name": "encoded parent directory",
+      "category": "traversal",
+      "path": "/%2e%2e%2fserver.mjs",
+      "mustNotContain": ["createServer"]
+    },
+    {
+      "name": "encoded parent directories, deep",
+      "category": "traversal",
+      "path": "/assets/%2e%2e%2f%2e%2e%2f%2e%2e%2fpackage.json",
+      "mustNotContain": ["\"name\": \"loop-playwright\""]
+    },
+    {
+      "name": "double-encoded parent directory",
+      "category": "double-encoding",
+      "path": "/%252e%252e%252fserver.mjs",
+      "mustNotContain": ["createServer"]
+    },
+    {
+      "name": "encoded backslashes",
+      "category": "backslash",
+      "path": "/%5c..%5c..%5cserver.mjs",
+      "mustNotContain": ["createServer"]
+    },
+    {
+      "name": "NUL before the extension",
+      "category": "nul",
+      "path": "/assets/..%00.js",
+      "mustNotContain": ["\"name\": \"loop-playwright\""]
+    },
+    {
+      "name": "absolute-looking path",
+      "category": "absolute-path",
+      "path": "/%2fetc%2fpasswd",
+      "mustNotContain": ["root:"]
+    },
+    {
+      "name": "env file",
+      "category": "dotfile",
+      "path": "/.env",
+      "mustNotContain": ["PASSWORD=", "USER_NAME="]
+    },
+    {
+      "name": "encoded env file",
+      "category": "dotfile",
+      "path": "/%2eenv",
+      "mustNotContain": ["PASSWORD=", "USER_NAME="]
+    },
+    {
+      "name": "encoded parent directory to a source file",
+      "category": "traversal",
+      "path": "/assets/%2e%2e%2f%2e%2e%2fserver.mjs",
+      "mustNotContain": ["createServer"]
+    }
+  ],
+  "formPayloads": [
+    {
+      "name": "script tag",
+      "category": "script-html",
+      "username": "<script>window.__pwned=1</script>",
+      "password": "<script>alert(1)</script>"
+    },
+    {
+      "name": "image with onerror",
+      "category": "script-html",
+      "username": "<img src=x onerror=\"window.__pwned=1;alert(1)\">",
+      "password": "x"
+    },
+    {
+      "name": "javascript URL",
+      "category": "script-html",
+      "username": "javascript:alert(1)",
+      "password": "x"
+    }
+  ]
+}
