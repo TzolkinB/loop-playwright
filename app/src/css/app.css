@@ -201,11 +201,39 @@ button:disabled {
   font-size: 1.25rem;
 }
 
-/* Board: columns stack on narrow screens; the lanes layout comes in a later ticket. */
+/* Board, mobile first: columns are side-by-side lanes that scroll sideways and
+   snap. The scroller bleeds to the screen edges so lanes can slide under them,
+   and its padding keeps the first lane off the edge. */
 .board {
-  display: grid;
-  gap: 16px;
-  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 16px calc(-1 * var(--page-padding)) 0;
+  padding: 0 var(--page-padding) 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--page-padding);
+  overscroll-behavior-x: contain;
+}
+
+.board > .column {
+  flex: 0 0 82%;
+  scroll-snap-align: start;
+}
+
+/* From tablet width all columns fit, so they share the row evenly. */
+@media (min-width: 768px) {
+  .board {
+    gap: 16px;
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .board > .column {
+    flex: 1 1 0;
+    min-width: 0;
+  }
 }
 
 .column {

@@ -13,7 +13,7 @@ export default function AppShell({ onSignOut }: Props) {
           Sign out
         </button>
       </header>
-      <section className="board" aria-label="Task board">
+      <section className="board" aria-label="Task board" tabIndex={0}>
         {webBoard.columns.map(column => (
           <Column key={column.name} {...column} />
         ))}
