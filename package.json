@@ -25,6 +25,9 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": ">=22.21.0"
+  },
   "bugs": {
     "url": "https://github.com/TzolkinB/loop-playwright/issues"
   },
