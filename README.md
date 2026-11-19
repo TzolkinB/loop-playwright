@@ -30,10 +30,10 @@ This project uses the following tools for development and testing:
 
 ### Demo App Scripts
 
-| Script              | Command               | Description                                         |
-| ------------------- | --------------------- | --------------------------------------------------- |
-| `npm run build:app` | `vite build app`      | Build the Demo app into `app/dist`                  |
-| `npm run start:app` | `node app/server.mjs` | Serve the built Demo app on `http://127.0.0.1:4173` |
+| Script              | Command                                         | Description                                         |
+| ------------------- | ----------------------------------------------- | --------------------------------------------------- |
+| `npm run build:app` | `vite build app`                                | Build the Demo app into `app/dist`                  |
+| `npm run start:app` | `node --env-file-if-exists=.env app/server.mjs` | Serve the built Demo app on `http://127.0.0.1:4173` |
 
 ### Code Quality Scripts
 
@@ -238,7 +238,7 @@ npm run build:app
 npm run start:app
 ```
 
-Then open http://127.0.0.1:4173. It listens on localhost only. Set `PORT` to use a different port.
+Then open http://127.0.0.1:4173. It listens on localhost only. Set `PORT` to use a different port. The app reads `USER_NAME` and `PASSWORD` from `.env`, or from the environment if they are already set there.
 
 ### Running Tests
 
