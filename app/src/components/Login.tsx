@@ -30,7 +30,7 @@ export default function Login({ onSignedIn }: Props) {
 
   return (
     <main className="page">
-      <form className="login" onSubmit={handleSubmit}>
+      <form className="login glass" onSubmit={handleSubmit}>
         <h1>Task Board Demo</h1>
         <label htmlFor="username">Username</label>
         <input id="username" name="username" autoComplete="username" required />
