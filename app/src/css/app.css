@@ -201,6 +201,36 @@ button:disabled {
   font-size: 1.25rem;
 }
 
+/* Board: columns stack on narrow screens; the lanes layout comes in a later ticket. */
+.board {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.column {
+  padding: 16px;
+}
+
+.column h2 {
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+}
+
+.column .card {
+  max-width: none;
+  margin-top: 0;
+}
+
+.column .card + .card {
+  margin-top: 12px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--muted);
+}
+
 /* Task card: a smaller, stronger glass pane with its tags in a row. */
 .card {
   --radius: 16px;

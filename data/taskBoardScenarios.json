@@ -3,7 +3,7 @@
     {
       "appType": "Web Application",
       "requiresNavigation": false,
-      "taskTitle": "Implement user authentication",
+      "taskTitle": "Harden login input validation",
       "tags": ["Feature", "High Priority"],
       "column": "To Do",
       "taskCount": 2
@@ -11,7 +11,7 @@
     {
       "appType": "Web Application",
       "requiresNavigation": false,
-      "taskTitle": "Fix navigation bug",
+      "taskTitle": "Fix flaky board test in WebKit",
       "tags": ["Bug"],
       "column": "To Do",
       "taskCount": 2
@@ -19,7 +19,7 @@
     {
       "appType": "Web Application",
       "requiresNavigation": false,
-      "taskTitle": "Design system updates",
+      "taskTitle": "Update glass theme tokens",
       "tags": ["Design"],
       "column": "In Progress",
       "taskCount": 1
@@ -27,7 +27,7 @@
     {
       "appType": "Mobile Application",
       "requiresNavigation": true,
-      "taskTitle": "Push notification system",
+      "taskTitle": "Add axe accessibility scan",
       "tags": ["Feature"],
       "column": "To Do",
       "taskCount": 1
@@ -35,7 +35,7 @@
     {
       "appType": "Mobile Application",
       "requiresNavigation": true,
-      "taskTitle": "Offline mode",
+      "taskTitle": "Test drawer navigation at phone width",
       "tags": ["Feature", "High Priority"],
       "column": "In Progress",
       "taskCount": 1
@@ -43,7 +43,7 @@
     {
       "appType": "Mobile Application",
       "requiresNavigation": true,
-      "taskTitle": "App icon design",
+      "taskTitle": "Build the mobile-first prototype",
       "tags": ["Design"],
       "column": "Done",
       "taskCount": 1

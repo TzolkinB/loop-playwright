@@ -8,7 +8,13 @@
     "allowJs": true,
     "checkJs": true,
     "skipLibCheck": true,
-    "types": ["node"]
+    "types": ["node"],
+    "resolveJsonModule": true
   },
-  "include": ["./**/*.ts", "../app/lib/**/*.mjs"]
+  "include": [
+    "./**/*.ts",
+    "../app/lib/**/*.mjs",
+    "../app/src/data/**/*.ts",
+    "../data/*.json"
+  ]
 }

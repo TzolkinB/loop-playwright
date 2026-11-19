@@ -1,8 +1,9 @@
-import TaskCard from './TaskCard'
+import { webBoard } from '../data/boards'
+import Column from './Column'
 
 type Props = { onSignOut: () => void }
 
-// Placeholder shell: the Task board and navigation arrive in later tickets.
+// The Web Application board. Switching to the Mobile board arrives in a later ticket.
 export default function AppShell({ onSignOut }: Props) {
   return (
     <main className="page">
@@ -12,11 +13,11 @@ export default function AppShell({ onSignOut }: Props) {
           Sign out
         </button>
       </header>
-      {/* Stand-in card: the Column component and real board data replace it in later tickets. */}
-      <TaskCard
-        title="Implement user authentication"
-        tags={['Feature', 'High Priority']}
-      />
+      <section className="board" aria-label="Task board">
+        {webBoard.columns.map(column => (
+          <Column key={column.name} {...column} />
+        ))}
+      </section>
     </main>
   )
 }
