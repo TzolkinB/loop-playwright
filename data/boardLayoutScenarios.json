@@ -1,0 +1,19 @@
+{
+  "boardName": "Task board",
+  "edgePadding": 16,
+  "scenarios": [
+    { "name": "phone", "width": 390, "height": 760, "layout": "lanes" },
+    {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024,
+      "layout": "side-by-side"
+    },
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800,
+      "layout": "side-by-side"
+    }
+  ]
+}
