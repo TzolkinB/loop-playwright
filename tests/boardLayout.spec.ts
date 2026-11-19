@@ -29,6 +29,10 @@ test.describe('Task board layout', () => {
         const board = page.getByRole('region', { name: layoutSpec.boardName })
         await expect(board).toBeVisible()
 
+        // A scroll area only a mouse can scroll fails keyboard users, so it must take focus.
+        await board.focus()
+        await expect(board).toBeFocused()
+
         const { scrolls, columns } = await columnBoxes(board)
 
         // Side by side and wider than the screen, so the lanes scroll.
