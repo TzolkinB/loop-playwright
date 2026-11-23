@@ -1,9 +1,9 @@
 type Props = { title: string; tags: string[] }
 
-// A div, not an article: the suite's page object finds cards as divs inside a column.
+// A list item holding a level-3 heading, so the suite finds a card by what it contains.
 export default function TaskCard({ title, tags }: Props) {
   return (
-    <div className="card glass">
+    <li className="card glass">
       <h3>{title}</h3>
       <ul className="tags">
         {tags.map(tag => (
@@ -12,6 +12,6 @@ export default function TaskCard({ title, tags }: Props) {
           </li>
         ))}
       </ul>
-    </div>
+    </li>
   )
 }

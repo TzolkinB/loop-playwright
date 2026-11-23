@@ -250,6 +250,12 @@ button:disabled {
   margin-top: 0;
 }
 
+.cards {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .column .card + .card {
   margin-top: 12px;
 }
