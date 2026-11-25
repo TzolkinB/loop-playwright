@@ -30,6 +30,22 @@ test.describe('Application navigation', () => {
     })
   })
 
+  test('widening the window with the drawer open leaves no backdrop over the page', async ({
+    page,
+  }) => {
+    const taskBoard = new TaskBoardPage(page)
+    await page.setViewportSize({ width: 768, height: 1024 })
+    await page.goto('/')
+    await taskBoard.menuButton.click()
+    await expect(taskBoard.backdrop).toBeVisible()
+
+    await page.setViewportSize({ width: 1280, height: 800 })
+
+    await expect(taskBoard.backdrop).toBeHidden()
+    await expect(taskBoard.menuButton).toHaveCount(0)
+    await expect(taskBoard.navigation).toBeVisible()
+  })
+
   drawers.forEach(scenario => {
     test.describe(`${scenario.name} (${scenario.width}px)`, () => {
       test.use({

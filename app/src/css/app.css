@@ -381,7 +381,8 @@ button:disabled {
     margin-top: 0;
   }
 
-  .menu-button {
+  .menu-button,
+  .backdrop {
     display: none;
   }
 
