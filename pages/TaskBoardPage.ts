@@ -27,15 +27,12 @@ export default class TaskBoardPage {
 
   /**
    * Returns a locator scoped to the board column with the given name.
-   * Matches the wrapping `div` that contains the column's h2 heading.
+   * Each column is a region named by its heading, e.g. "To Do (2)", so the
+   * count is matched loosely and the column name exactly.
    */
   column(columnName: ColumnName): Locator {
-    return this.page.locator('div').filter({
-      has: this.page.getByRole('heading', {
-        level: 2,
-        name: columnName,
-        exact: false,
-      }),
+    return this.page.getByRole('region', {
+      name: new RegExp(`^${columnName} \\(\\d+\\)$`),
     })
   }
 
@@ -57,19 +54,18 @@ export default class TaskBoardPage {
    * @param taskTitle - Exact title of the task card.
    */
   taskInColumn(columnName: ColumnName, taskTitle: string): Locator {
-    const col = this.column(columnName)
-    return col.getByRole('heading', {
+    return this.column(columnName).getByRole('heading', {
       level: 3,
       name: taskTitle,
+      exact: true,
     })
   }
 
   /**
-   * Returns a locator for a task card that matches both a title and one or more tags.
-   * Filters progressively so every supplied tag must be present on the same card.
-   * Uses `.last()` to resolve ambiguity when multiple wrapper divs match.
+   * Returns a locator for the task card (a list item) in a column whose title
+   * heading matches and that shows every supplied tag.
    * @param columnName - The column to search within.
-   * @param taskTitle - Text that appears in the task card.
+   * @param taskTitle - Exact title of the task card.
    * @param tags - One or more tag labels that must all appear on the card.
    */
   taskWithTags(
@@ -77,15 +73,21 @@ export default class TaskBoardPage {
     taskTitle: string,
     ...tags: TagName[]
   ): Locator {
-    const col = this.column(columnName)
-
-    let taskLocator = col.locator('div').filter({ hasText: taskTitle })
+    let card = this.column(columnName)
+      .getByRole('listitem')
+      .filter({
+        has: this.page.getByRole('heading', {
+          level: 3,
+          name: taskTitle,
+          exact: true,
+        }),
+      })
 
     for (const tag of tags) {
-      taskLocator = taskLocator.filter({ hasText: tag })
+      card = card.filter({ has: this.page.getByText(tag, { exact: true }) })
     }
 
-    return taskLocator.last()
+    return card
   }
 
   /**
