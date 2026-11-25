@@ -41,6 +41,33 @@ test.describe('Task board locators tell the columns apart', () => {
     ).toHaveCount(0)
   })
 
+  test('a card is found by its tags, and a wrong tag does not match', async ({
+    page,
+  }) => {
+    const board = new TaskBoardPage(page)
+
+    // Positive: every tag the card shows is accepted.
+    await expect(
+      board.taskWithTags(first.column, first.title, ...first.tags)
+    ).toBeVisible()
+    await expect(
+      board.taskWithTags(second.column, second.title, ...second.tags)
+    ).toBeVisible()
+
+    // Negative: the card is in this column, so only the tag can rule it out.
+    await expect(
+      board.taskWithTags(first.column, first.title, TagName.DESIGN)
+    ).toHaveCount(0)
+    await expect(
+      board.taskWithTags(
+        first.column,
+        first.title,
+        ...first.tags,
+        TagName.DESIGN
+      )
+    ).toHaveCount(0)
+  })
+
   test('swapping two cards between columns makes their locators fail', async ({
     page,
   }) => {
