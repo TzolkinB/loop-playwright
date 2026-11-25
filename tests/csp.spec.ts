@@ -30,8 +30,9 @@ test('app loads and signs in under the Content-Security-Policy with no violation
   await page.getByLabel('Password').fill(password)
   await page.getByRole('button', { name: 'Sign in' }).click()
 
+  // Level 1: the navigation also lists "Web Application" as a level-2 heading.
   await expect(
-    page.getByRole('heading', { name: 'Web Application' })
+    page.getByRole('heading', { level: 1, name: 'Web Application' })
   ).toBeVisible()
   expect(violations).toEqual([])
   expect(consoleErrors).toEqual([])

@@ -299,3 +299,101 @@ button:disabled {
   background: rgb(31 70 184 / 0.12);
   border: 1px solid rgb(31 70 184 / 0.25);
 }
+
+/* Application navigation, mobile first: a drawer that slides in from the left.
+   The header sits above the backdrop so the menu button can still close it.
+   Closed, the drawer is visibility:hidden, so it is out of the tab order and
+   the accessibility tree, and the page holds only one copy of its buttons. */
+.shell-header {
+  z-index: 30;
+}
+
+.shell-header h1 {
+  flex: 1;
+}
+
+.menu-button {
+  line-height: 1;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: rgb(16 23 42 / 0.4);
+  filter: none;
+}
+
+.app-nav {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(80vw, 300px);
+  padding: 88px 16px 16px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  visibility: hidden;
+  transform: translateX(-100%);
+  transition:
+    transform var(--motion),
+    visibility var(--motion);
+}
+
+.app-nav[data-open='true'] {
+  visibility: visible;
+  transform: none;
+  /* Visible at once, so focus can move in as it opens; closing still waits for the slide. */
+  transition: transform var(--motion);
+}
+
+.app-nav button {
+  text-align: left;
+}
+
+.app-nav h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* From desktop width the navigation is a permanent sidebar beside the board. */
+@media (min-width: 1024px) {
+  .shell {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-areas:
+      'header header'
+      'nav board';
+    gap: 16px;
+    align-items: start;
+  }
+
+  .shell-header {
+    grid-area: header;
+  }
+
+  .shell > .board {
+    grid-area: board;
+    margin-top: 0;
+  }
+
+  .menu-button {
+    display: none;
+  }
+
+  .app-nav {
+    position: relative;
+    grid-area: nav;
+    inset: auto;
+    width: auto;
+    padding: 16px;
+    border-radius: var(--radius);
+    visibility: visible;
+    transform: none;
+    transition: none;
+  }
+}
