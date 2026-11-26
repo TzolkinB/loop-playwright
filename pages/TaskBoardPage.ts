@@ -6,52 +6,44 @@ export default class TaskBoardPage {
   readonly page: Page
   /** h1 heading for the Mobile app view */
   readonly mobileAppHeading: Locator
-  /** h2 heading inside the Mobile navigation button */
-  readonly mobileNavHeading: Locator
   /** Button that toggles the Mobile task board view */
   readonly mobileNavigationButton: Locator
 
   /** Landmark that lists the Application types: the sidebar, or the drawer on narrow screens */
   readonly navigation: Locator
-  /** Button that opens and closes the drawer; absent when the sidebar shows */
+  /** Sign out button, at the bottom of the navigation */
+  readonly signOutButton: Locator
+  /** Button that opens and closes the menu; absent when the sidebar shows */
   readonly menuButton: Locator
-  /** Backdrop behind the open drawer; choosing it closes the drawer */
-  readonly backdrop: Locator
 
   constructor(page: Page) {
     this.page = page
     this.navigation = this.page.getByRole('navigation', {
       name: navigationData.navigationName,
     })
-    this.menuButton = this.page.getByRole('button', {
-      name: navigationData.menuButtonName,
+    this.signOutButton = this.navigation.getByRole('button', {
+      name: 'Sign out',
       exact: true,
     })
-    this.backdrop = this.page.getByRole('button', {
-      name: navigationData.backdropName,
+    this.menuButton = this.page.getByRole('button', {
+      name: navigationData.menuButtonName,
       exact: true,
     })
     this.mobileAppHeading = this.page.getByRole('heading', {
       level: 1,
       name: AppType.MOBILE,
     })
-    this.mobileNavHeading = this.page.getByRole('heading', {
-      level: 2,
+    this.mobileNavigationButton = this.navigation.getByRole('button', {
       name: AppType.MOBILE,
+      exact: true,
     })
-    this.mobileNavigationButton = this.page
-      .getByRole('button')
-      .filter({ has: this.mobileNavHeading })
   }
 
   /**
-   * Returns the navigation button for an Application type: a button that wraps
-   * the type's level-2 heading.
+   * Returns the navigation button for an Application type, found by its name.
    */
   appTypeButton(appType: AppType): Locator {
-    return this.navigation.getByRole('button').filter({
-      has: this.page.getByRole('heading', { level: 2, name: appType }),
-    })
+    return this.navigation.getByRole('button', { name: appType, exact: true })
   }
 
   /**

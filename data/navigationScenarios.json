@@ -1,7 +1,6 @@
 {
   "navigationName": "Application types",
   "menuButtonName": "Menu",
-  "backdropName": "Close menu",
   "appTypes": ["Web Application", "Mobile Application"],
   "scenarios": [
     { "name": "phone", "width": 390, "height": 760, "navigation": "drawer" },

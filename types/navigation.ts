@@ -14,8 +14,6 @@ export interface NavigationTypes {
   navigationName: string
   /** Accessible name of the button that opens and closes the drawer. */
   menuButtonName: string
-  /** Accessible name of the backdrop behind the open drawer. */
-  backdropName: string
   /** The Application types listed, in order. */
   appTypes: string[]
   scenarios: NavigationScenario[]

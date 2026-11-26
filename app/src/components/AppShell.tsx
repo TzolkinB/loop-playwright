@@ -17,7 +17,7 @@ export default function AppShell({ onSignOut }: Props) {
   }, [])
 
   return (
-    <main className="page shell">
+    <main className="page shell" data-menu-open={menuOpen}>
       <header className="shell-header glass">
         <button
           ref={menuButton}
@@ -28,23 +28,11 @@ export default function AppShell({ onSignOut }: Props) {
           aria-controls="app-nav"
           onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}
         >
-          <span aria-hidden="true">&#9776;</span>
+          <span aria-hidden="true">{menuOpen ? '\u2715' : '\u2630'}</span>
         </button>
         <h1>Web Application</h1>
-        <button type="button" onClick={onSignOut}>
-          Sign out
-        </button>
       </header>
-      {menuOpen && (
-        <button
-          type="button"
-          className="backdrop"
-          aria-label="Close menu"
-          tabIndex={-1}
-          onClick={closeMenu}
-        />
-      )}
-      <AppNav open={menuOpen} onClose={closeMenu} />
+      <AppNav open={menuOpen} onClose={closeMenu} onSignOut={onSignOut} />
       <section className="board" aria-label="Task board" tabIndex={0}>
         {webBoard.columns.map(column => (
           <Column key={column.name} {...column} />

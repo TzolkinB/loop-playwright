@@ -3,6 +3,7 @@ import TaskBoardPage from '../pages/TaskBoardPage'
 import navigationData from '../data/navigationScenarios.json'
 import { AppType } from '../types/taskBoard'
 import { NavigationTypes } from '../types/navigation'
+import loginData from '../data/loginScenarios.json'
 
 const spec = navigationData as NavigationTypes
 const appTypes = spec.appTypes as AppType[]
@@ -27,23 +28,35 @@ test.describe('Application navigation', () => {
           await expect(taskBoard.appTypeButton(appType)).toBeVisible()
         }
       })
+
+      test('Sign out in the sidebar returns to the login form', async ({
+        page,
+      }) => {
+        const taskBoard = new TaskBoardPage(page)
+        await page.goto('/')
+
+        await taskBoard.signOutButton.click()
+
+        await expect(page.getByLabel(loginData.usernameLabel)).toBeVisible()
+        await expect(taskBoard.navigation).toHaveCount(0)
+      })
     })
   })
 
-  test('widening the window with the drawer open leaves no backdrop over the page', async ({
+  test('widening the window with the drawer open shows the sidebar and no menu button', async ({
     page,
   }) => {
     const taskBoard = new TaskBoardPage(page)
     await page.setViewportSize({ width: 768, height: 1024 })
     await page.goto('/')
     await taskBoard.menuButton.click()
-    await expect(taskBoard.backdrop).toBeVisible()
+    await expect(taskBoard.navigation).toBeVisible()
 
     await page.setViewportSize({ width: 1280, height: 800 })
 
-    await expect(taskBoard.backdrop).toBeHidden()
     await expect(taskBoard.menuButton).toHaveCount(0)
     await expect(taskBoard.navigation).toBeVisible()
+    await expect(taskBoard.appHeading(AppType.WEB)).toBeVisible()
   })
 
   drawers.forEach(scenario => {
@@ -81,19 +94,19 @@ test.describe('Application navigation', () => {
         )
       })
 
-      test('choosing the backdrop closes the drawer', async ({ page }) => {
+      test('Sign out is in the open menu and returns to the login form', async ({
+        page,
+      }) => {
         const taskBoard = new TaskBoardPage(page)
         await page.goto('/')
+        await expect(taskBoard.signOutButton).toBeHidden()
+
         await taskBoard.menuButton.click()
-        await expect(taskBoard.navigation).toBeVisible()
+        await expect(taskBoard.signOutButton).toBeVisible()
+        await taskBoard.signOutButton.click()
 
-        // Click the strip right of the drawer, so the click lands on the backdrop itself.
-        await taskBoard.backdrop.click({
-          position: { x: scenario.width - 10, y: scenario.height / 2 },
-        })
-
-        await expect(taskBoard.navigation).toBeHidden()
-        await expect(taskBoard.backdrop).toHaveCount(0)
+        await expect(page.getByLabel(loginData.usernameLabel)).toBeVisible()
+        await expect(taskBoard.navigation).toHaveCount(0)
       })
 
       test('the drawer works from the keyboard', async ({ page }) => {
