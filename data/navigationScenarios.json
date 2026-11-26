@@ -1,0 +1,15 @@
+{
+  "navigationName": "Application types",
+  "menuButtonName": "Menu",
+  "appTypes": ["Web Application", "Mobile Application"],
+  "scenarios": [
+    { "name": "phone", "width": 390, "height": 760, "navigation": "drawer" },
+    { "name": "tablet", "width": 768, "height": 1024, "navigation": "drawer" },
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800,
+      "navigation": "sidebar"
+    }
+  ]
+}

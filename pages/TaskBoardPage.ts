@@ -1,28 +1,49 @@
 import { Page, Locator, expect } from '@playwright/test'
+import navigationData from '../data/navigationScenarios.json'
 import { AppType, ColumnName, TagName } from '../types/taskBoard'
 
 export default class TaskBoardPage {
   readonly page: Page
   /** h1 heading for the Mobile app view */
   readonly mobileAppHeading: Locator
-  /** h2 heading inside the Mobile navigation button */
-  readonly mobileNavHeading: Locator
   /** Button that toggles the Mobile task board view */
   readonly mobileNavigationButton: Locator
 
+  /** Landmark that lists the Application types: the sidebar, or the drawer on narrow screens */
+  readonly navigation: Locator
+  /** Sign out button, at the bottom of the navigation */
+  readonly signOutButton: Locator
+  /** Button that opens and closes the menu; absent when the sidebar shows */
+  readonly menuButton: Locator
+
   constructor(page: Page) {
     this.page = page
+    this.navigation = this.page.getByRole('navigation', {
+      name: navigationData.navigationName,
+    })
+    this.signOutButton = this.navigation.getByRole('button', {
+      name: 'Sign out',
+      exact: true,
+    })
+    this.menuButton = this.page.getByRole('button', {
+      name: navigationData.menuButtonName,
+      exact: true,
+    })
     this.mobileAppHeading = this.page.getByRole('heading', {
       level: 1,
       name: AppType.MOBILE,
     })
-    this.mobileNavHeading = this.page.getByRole('heading', {
-      level: 2,
+    this.mobileNavigationButton = this.navigation.getByRole('button', {
       name: AppType.MOBILE,
+      exact: true,
     })
-    this.mobileNavigationButton = this.page
-      .getByRole('button')
-      .filter({ has: this.mobileNavHeading })
+  }
+
+  /**
+   * Returns the navigation button for an Application type, found by its name.
+   */
+  appTypeButton(appType: AppType): Locator {
+    return this.navigation.getByRole('button', { name: appType, exact: true })
   }
 
   /**

@@ -299,3 +299,141 @@ button:disabled {
   background: rgb(31 70 184 / 0.12);
   border: 1px solid rgb(31 70 184 / 0.25);
 }
+
+/* Application navigation, mobile first: closed, the header shows the view name
+   beside the menu button. Open, a full-screen menu covers the page and the
+   header shows only the button (now a cross), with the links and Sign out
+   below. Closed, the menu is visibility:hidden, so it is out of the tab order
+   and the accessibility tree, and the page holds only one copy of its buttons. */
+.shell-header {
+  z-index: 30;
+  justify-content: flex-start;
+}
+
+.shell-header h1 {
+  flex: 1;
+}
+
+.menu-button {
+  min-width: 40px;
+  line-height: 1;
+}
+
+/* Phone and tablet only: the sidebar needs the header's view name. */
+@media (max-width: 1023px) {
+  .shell[data-menu-open='true'] .shell-header {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .shell[data-menu-open='true'] .shell-header::before {
+    display: none;
+  }
+
+  .shell[data-menu-open='true'] .shell-header h1 {
+    visibility: hidden;
+  }
+}
+
+.app-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 88px 16px 24px;
+  background: rgb(250 252 255 / 0.96);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  visibility: hidden;
+  transform: translateX(-100%);
+  transition:
+    transform var(--motion),
+    visibility var(--motion);
+}
+
+.app-nav[data-open='true'] {
+  visibility: visible;
+  transform: none;
+  /* Visible at once, so focus can move in as it opens; closing still waits for the slide. */
+  transition: transform var(--motion);
+}
+
+/* Quiet text rows: only the current app is filled, so they do not read as the header's buttons. */
+.app-nav button {
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+  background: transparent;
+  border-radius: var(--radius-small);
+}
+
+.app-nav button:hover {
+  filter: none;
+  background: rgb(31 70 184 / 0.08);
+}
+
+.app-nav button[aria-current='page'] {
+  color: var(--accent);
+  background: rgb(31 70 184 / 0.14);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* Sign out sits at the bottom, set apart from the links as an outlined button. */
+.app-nav .sign-out {
+  margin-top: auto;
+  text-align: center;
+  color: var(--accent);
+  border: 1px solid rgb(31 70 184 / 0.35);
+}
+
+/* From desktop width the navigation is a permanent full-height sidebar. The
+   header and board sit to its right, and the sidebar bleeds to the page edges. */
+@media (min-width: 1024px) {
+  .shell {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'nav header'
+      'nav board';
+    gap: 16px;
+    align-items: start;
+  }
+
+  .shell-header {
+    grid-area: header;
+  }
+
+  .shell > .board {
+    grid-area: board;
+    margin-top: 0;
+  }
+
+  .menu-button {
+    display: none;
+  }
+
+  .app-nav {
+    position: sticky;
+    top: 0;
+    grid-area: nav;
+    inset: auto;
+    height: 100dvh;
+    margin: calc(-1 * var(--page-padding)) 0 calc(-1 * var(--page-padding))
+      calc(-1 * var(--page-padding));
+    padding: var(--page-padding) 16px;
+    background: var(--glass);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border-right: 1px solid var(--glass-edge);
+    visibility: visible;
+    transform: none;
+    transition: none;
+  }
+}
