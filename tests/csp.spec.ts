@@ -25,7 +25,11 @@ test('app loads and signs in under the Content-Security-Policy with no violation
     if (message.type() === 'error') consoleErrors.push(message.text())
   })
 
-  await page.goto('/')
+  const response = await page.goto('/')
+  // Without a policy there is nothing to violate, so check one is actually sent.
+  expect(response?.headers()['content-security-policy']).toContain(
+    'default-src'
+  )
   await page.getByLabel('Username').fill(username)
   await page.getByLabel('Password').fill(password)
   await page.getByRole('button', { name: 'Sign in' }).click()
